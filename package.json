@@ -8,7 +8,7 @@
     "crx3": "^1.1.3",
     "crypto": "^1.0.1",
     "eslint": "^8.25.0",
-    "web-ext": "^7.3.0"
+    "web-ext": "^7.6.1"
   },
   "devDependencies": {},
   "scripts": {
