@@ -176,6 +176,11 @@ const BLOCKLIST = {
     scriptBlocking: [
       '*://*.tinypass.com/*',
     ]
+  },
+  theatlantic: {
+    scriptBlocking: [
+      'https://cdn.theatlantic.com/_next/static/chunks/3235-ce2ff3f397931170.js'
+    ]
   }
 };
 
