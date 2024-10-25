@@ -55,38 +55,42 @@ const INJECTION = {
     url : /gauchazh.clicrbs.com.br/,
     code: `
       (async () => {
-        const data = JSON.parse(decodeURI(window.__ISOMORPHIC_DATA__)).state.apollo.ROOT_QUERY
-        const key = Object.keys(data).filter(key => key.includes('article'))[0]
+        try {
+            const data = JSON.parse(decodeURI(window.__ISOMORPHIC_DATA__)).state.apollo.ROOT_QUERY;
+            const key = Object.keys(data).find(k => k.includes('article'));
 
-        const parts = data[key].article_body_components
-          .map(item => \`<div class="article-paragraph">\${item.html || item.data.embed}</div>\`)
-        const content = parts.reduce((acc, curr) => acc + curr)
+            if (key && data[key] && data[key].article_body_components) {
+                const parts = data[key].article_body_components
+                    .map(item => \`<div class="article-paragraph">\${item.html || item.data.embed}</div>\`)
+                    .join('');
 
-        while (true) {
-          const article = document.querySelector('.article-paragraph')
-          if (article === null) {
-             await new Promise(r => setTimeout(r, 1000));
-             continue
-          }
+                const insertContent = () => {
+                    const article = document.querySelector('.article-paragraph');
+                    if (article) {
+                        article.insertAdjacentHTML('afterend', parts);
+                        document.querySelectorAll('.article-paragraph').forEach(item => {
+                            item.style.opacity = '1';
+                        });
+                        document.querySelectorAll('a').forEach(link => {
+                            link.addEventListener('click', e => {
+                                e.preventDefault();
+                                e.stopImmediatePropagation();
+                            });
+                        });
+                    }
+                };
 
-          article.insertAdjacentHTML('afterend', content)
-          document.querySelectorAll('.article-paragraph').forEach(item => {
-            item.style.opacity = '1';
-          })
-          document.querySelectorAll('a').forEach(item => {
-            item.addEventListener('click', (e) => {
-              e.stopImmediatePropagation()
-              return false;
-            })
-          })
-
-          var style = document.createElement('style');
-          style.textContent = '.paid-content-template::before { display: none; }';
-          (document.head||document.documentElement).appendChild(script);
-
-          break;
-       }
-     })()
+                const checkReady = setInterval(() => {
+                    if (document.querySelector('.article-paragraph')) {
+                        clearInterval(checkReady);
+                        insertContent();
+                    }
+                }, 1000);
+            }
+        } catch (err) {
+            console.error("Erro ao processar o artigo:", err);
+        }
+            })();
     `
   },
   nexo: {
