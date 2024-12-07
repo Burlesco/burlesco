@@ -80,6 +80,14 @@ const INJECTION = {
             })
           })
 
+          document.getElementById('paywallTemplate')?.remove();
+          document.querySelectorAll('.article-content').forEach(function(element) {
+              element.classList.remove('article-content');
+          });
+          document.querySelectorAll('aside.m-read-more.leak-left,div.article-paragraph[type="unstyled"], div.article-paragraph[type="atomic"], div.article-paragraph[type="header-three"]').forEach(function(element) {
+              element.remove();
+          });
+
           var style = document.createElement('style');
           style.textContent = '.paid-content-template::before { display: none; }';
           (document.head||document.documentElement).appendChild(script);
